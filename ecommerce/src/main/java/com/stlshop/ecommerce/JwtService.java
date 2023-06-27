@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+//import javax.print.DocFlavor.STRING;
+
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -66,6 +69,17 @@ public class JwtService {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public static String getUserIdByToken(HttpHeaders headers, String SECRET_KEY) {
+        String token = headers.get("Authorization").get(0);
+        String jwt = token.replace("Bearer", "");
+
+        System.out.println("Jwt by userId: " + jwt);
+        String userEmail = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(jwt).getBody().getSubject();
+
+        System.out.println("Get user id End");
+        return userEmail;
     }
 
     private Key getSignInKey() {
